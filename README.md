@@ -30,7 +30,7 @@ A clean, dark-mode desktop application for downloading YouTube videos in the hig
 
 ```bash
 # 1. Clone the repo
-git https://github.com/drewjustinn/VidExtract.git
+git https://github.com/zjustinn/VidExtract.git
 cd VidExtract
 
 # 2. Create and activate a virtual environment
