@@ -12,7 +12,6 @@ A clean, dark-mode desktop application for downloading YouTube videos in the hig
 
 - **Smart quality detection** — analyses each video and shows only available resolutions (144p → 8K)
 - **H.264 priority** — downloads in the most compatible codec for editing software
-- **Clip trimmer** — drag a visual timeline to download only a specific portion of a video
 - **Full video download** — with audio track merged into a single MP4
 - **Audio only** — extract MP3 at 192kbps
 - **Subtitle download** — optional English subtitles
@@ -31,8 +30,8 @@ A clean, dark-mode desktop application for downloading YouTube videos in the hig
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/yourusername/yt-downloader.git
-cd yt-downloader
+git https://github.com/drewjustinn/VidExtract.git
+cd VidExtract
 
 # 2. Create and activate a virtual environment
 python -m venv ytenv
@@ -86,6 +85,7 @@ Pull requests are welcome! Some ideas for contributions:
 - [ ] Playlist support (download all videos from a playlist)
 - [ ] Download queue / batch downloads
 - [ ] Download history log
+- [ ] Start/End trim and download
 - [ ] Windows `.exe` packaging with PyInstaller
 - [ ] Linux / macOS support
 
