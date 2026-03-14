@@ -113,7 +113,6 @@ class MainWindow(ctk.CTk):
         super().__init__()
 
         self.title("VidExtract")
-        self.iconbitmap(r"assets\vidextract.ico")
         self.geometry("1000x700")
         self.minsize(860, 600)
         self.configure(fg_color=BG)
