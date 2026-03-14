@@ -9,7 +9,7 @@ DefaultGroupName=VidExtract
 OutputBaseFilename=VidExtract_setup
 Compression=lzma
 SolidCompression=yes
-SetupIconFile=assets\vidextract.ico
+SetupIconFile=..\assets\vidextract.ico
 
 [Files]
 
