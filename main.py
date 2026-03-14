@@ -20,25 +20,57 @@ def auto_update_ytdlp(callback):
     try:
         import urllib.request
         import json
+        import os
 
-        with urllib.request.urlopen("https://pypi.org/pypi/yt-dlp/json", timeout=5) as r:
-            latest = json.loads(r.read())["info"]["version"]
+        # Get latest yt-dlp release info from GitHub
+        req = urllib.request.Request(
+            "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest",
+            headers={"User-Agent": "VidExtract"}
+        )
+        with urllib.request.urlopen(req, timeout=10) as r:
+            release = json.loads(r.read())
 
-        import yt_dlp
-        installed = yt_dlp.version.__version__
+        latest_version = release["tag_name"]
 
-        if installed != latest:
-            callback(f"🔄 Updating yt-dlp {installed} → {latest}...")
-            kwargs = {}
-            if sys.platform == "win32":
-                kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
-            subprocess.run(
-                [sys.executable, "-m", "pip", "install", "-U", "yt-dlp", "-q"],
-                check=True, **kwargs
-            )
-            callback(f"✅ yt-dlp updated to {latest}")
+        # Find yt-dlp.exe path
+        if getattr(sys, 'frozen', False):
+            ytdlp_path = os.path.join(os.path.dirname(sys.executable), "yt-dlp.exe")
         else:
-            callback(f"✅ yt-dlp is up to date ({installed})")
+            ytdlp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "yt-dlp.exe")
+
+        # Check current version
+        import subprocess
+        kwargs = {}
+        if sys.platform == "win32":
+            kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+        result = subprocess.run(
+            [ytdlp_path, "--version"],
+            capture_output=True, text=True, **kwargs
+        )
+        current_version = result.stdout.strip()
+
+        if current_version == latest_version:
+            callback(f"✅ yt-dlp is up to date ({current_version})")
+            return
+
+        # Download new yt-dlp.exe
+        callback(f"🔄 Updating yt-dlp {current_version} → {latest_version}...")
+
+        download_url = next(
+            a["browser_download_url"]
+            for a in release["assets"]
+            if a["name"] == "yt-dlp.exe"
+        )
+
+        tmp_path = ytdlp_path + ".tmp"
+        urllib.request.urlretrieve(download_url, tmp_path)
+
+        # Replace old with new
+        if os.path.exists(ytdlp_path):
+            os.remove(ytdlp_path)
+        os.rename(tmp_path, ytdlp_path)
+
+        callback(f"✅ yt-dlp updated to {latest_version}")
 
     except Exception as e:
         callback(f"⚠️ yt-dlp update check failed: {e}")

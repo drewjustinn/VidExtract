@@ -6,6 +6,7 @@ touches subprocess directly. Import this module from anywhere.
 """
 
 import os
+import sys
 import json
 import subprocess
 import urllib.request
@@ -14,6 +15,15 @@ from pathlib import Path
 # ── Paths (users edit only these two lines) ───────────────────────────────────
 NODE_PATH  = r"C:\Program Files\nodejs\node.exe"
 FFMPEG_DIR = r"D:\YouTube Download"
+
+def get_ytdlp_exe() -> str:
+    """Find yt-dlp.exe — works in VS Code and packaged .exe"""
+    if getattr(sys, 'frozen', False):
+        # Running as packaged .exe
+        return os.path.join(os.path.dirname(sys.executable), "yt-dlp.exe")
+    else:
+        # Running in VS Code — same folder as project root
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), "yt-dlp.exe")
 
 def _get_browser() -> str:
     try:
@@ -25,7 +35,7 @@ def _get_browser() -> str:
 
 # ── Base yt-dlp flags used in every call ─────────────────────────────────────
 YTDLP_BASE = [
-    "yt-dlp",
+    get_ytdlp_exe(),
     "--js-runtimes",      f"node:{NODE_PATH}",
     "--remote-components","ejs:github",
     "--ffmpeg-location",  FFMPEG_DIR,
